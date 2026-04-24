@@ -1,8 +1,12 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --qis: #A3005C;
+  --qis-deep: #7a0044;
+  --qis-light: #c4006f;
+  --qis-glow: rgba(163, 0, 92, 0.15);
+  --background: #0d0006;
+  --foreground: #ffffff;
 }
 
 @theme inline {
@@ -12,15 +16,27 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  box-sizing: border-box;
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-family: var(--font-sans), Arial, sans-serif;
+}
+
+/* Subtle QIS grid background */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(163, 0, 92, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(163, 0, 92, 0.05) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 0;
 }
