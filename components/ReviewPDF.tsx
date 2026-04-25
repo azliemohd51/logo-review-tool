@@ -7,7 +7,6 @@ import {
   View,
   Image as PDFImage,
   StyleSheet,
-  Font,
 } from "@react-pdf/renderer";
 import { LogoReview } from "@/lib/types";
 
@@ -21,77 +20,30 @@ const DIMENSION_LABELS: Record<string, string> = {
 };
 
 const styles = StyleSheet.create({
-  page: {
-    backgroundColor: "#0d0006",
-    padding: 40,
-    fontFamily: "Helvetica",
-  },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 28,
-    gap: 20,
-    borderBottom: "1px solid #A3005C40",
-    paddingBottom: 20,
-  },
-  logoImg: {
-    width: 80,
-    height: 80,
-    objectFit: "contain",
-    borderRadius: 8,
-    backgroundColor: "#ffffff10",
-    padding: 6,
-  },
+  page: { backgroundColor: "#ffffff", padding: 48, fontFamily: "Helvetica" },
+  header: { flexDirection: "row", alignItems: "flex-start", marginBottom: 28, gap: 20, borderBottom: "1px solid #e5e5e5", paddingBottom: 24 },
+  logoImg: { width: 72, height: 72, objectFit: "contain", border: "1px solid #e5e5e5", padding: 6, backgroundColor: "#f9f9f9" },
   headerText: { flex: 1 },
-  tagline: { fontSize: 9, color: "#A3005C", letterSpacing: 2, marginBottom: 6, textTransform: "uppercase" },
-  overallScore: { fontSize: 48, fontFamily: "Helvetica-Bold", color: "#ff1f7e", lineHeight: 1 },
-  overallSub: { fontSize: 18, color: "#ffffff40" },
-  firstImpression: { fontSize: 10, color: "#ffffff80", marginTop: 6, lineHeight: 1.5 },
-  sectionTitle: { fontSize: 8, color: "#A3005C", letterSpacing: 2, textTransform: "uppercase", marginBottom: 10 },
-  grid: { flexDirection: "row", flexWrap: "wrap", gap: 10, marginBottom: 16 },
-  card: {
-    width: "47%",
-    backgroundColor: "#ffffff08",
-    borderRadius: 8,
-    padding: 12,
-    border: "1px solid #A3005C30",
-  },
-  cardHeader: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 6 },
-  cardLabel: { fontSize: 8, color: "#ffffff70" },
-  cardScore: { fontSize: 16, fontFamily: "Helvetica-Bold", color: "#ff1f7e" },
-  barTrack: { height: 3, backgroundColor: "#ffffff15", borderRadius: 2, marginBottom: 6 },
-  barFill: { height: 3, borderRadius: 2, backgroundColor: "#A3005C" },
-  cardAssessment: { fontSize: 8, color: "#ffffff50", lineHeight: 1.4 },
-  improvementsCard: {
-    backgroundColor: "#ffffff08",
-    borderRadius: 8,
-    padding: 14,
-    border: "1px solid #A3005C30",
-    marginBottom: 16,
-  },
-  improvRow: { flexDirection: "row", gap: 10, marginBottom: 8, alignItems: "flex-start" },
-  improvNum: {
-    width: 18, height: 18,
-    backgroundColor: "#A3005C",
-    borderRadius: 9,
-    fontSize: 8,
-    fontFamily: "Helvetica-Bold",
-    color: "#ffffff",
-    textAlign: "center",
-    paddingTop: 4,
-    flexShrink: 0,
-  },
-  improvText: { fontSize: 9, color: "#ffffff70", lineHeight: 1.5, flex: 1 },
-  summaryCard: {
-    backgroundColor: "#ffffff08",
-    borderRadius: 8,
-    padding: 14,
-    border: "1px solid #A3005C30",
-    marginBottom: 16,
-  },
-  summaryText: { fontSize: 9, color: "#ffffff60", lineHeight: 1.5 },
-  footer: { marginTop: 10, borderTop: "1px solid #A3005C20", paddingTop: 10, flexDirection: "row", justifyContent: "space-between" },
-  footerText: { fontSize: 7, color: "#ffffff30" },
+  label: { fontSize: 7, color: "#999999", letterSpacing: 2, textTransform: "uppercase", marginBottom: 4 },
+  overallScore: { fontSize: 52, fontFamily: "Helvetica-Bold", color: "#000000", lineHeight: 1 },
+  overallSub: { fontSize: 20, color: "#cccccc", fontFamily: "Helvetica" },
+  firstImpression: { fontSize: 9, color: "#555555", marginTop: 6, lineHeight: 1.5 },
+  section: { marginBottom: 20, paddingBottom: 20, borderBottom: "1px solid #eeeeee" },
+  sectionTitle: { fontSize: 7, color: "#999999", letterSpacing: 2, textTransform: "uppercase", marginBottom: 10 },
+  logoTypeBadge: { border: "1px solid #000000", padding: "3 8", marginBottom: 6, alignSelf: "flex-start" },
+  logoTypeText: { fontSize: 8, fontFamily: "Helvetica-Bold", letterSpacing: 1, textTransform: "uppercase" },
+  logoTypeReasoning: { fontSize: 9, color: "#555555", lineHeight: 1.5 },
+  colorPsychText: { fontSize: 9, color: "#555555", lineHeight: 1.5 },
+  grid: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
+  card: { width: "47.5%", border: "1px solid #eeeeee", padding: 10 },
+  cardHeader: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 5 },
+  cardLabel: { fontSize: 7, color: "#999999", letterSpacing: 1, textTransform: "uppercase" },
+  cardScore: { fontSize: 14, fontFamily: "Helvetica-Bold", color: "#000000" },
+  barTrack: { height: 1, backgroundColor: "#eeeeee", marginBottom: 6 },
+  barFill: { height: 1, backgroundColor: "#000000" },
+  cardAssessment: { fontSize: 8, color: "#666666", lineHeight: 1.4 },
+  footer: { marginTop: 16, paddingTop: 12, borderTop: "1px solid #eeeeee", flexDirection: "row", justifyContent: "space-between" },
+  footerText: { fontSize: 7, color: "#bbbbbb" },
 });
 
 interface ReviewPDFProps {
@@ -107,16 +59,30 @@ export function ReviewPDF({ review, logoDataUrl }: ReviewPDFProps) {
         <View style={styles.header}>
           <PDFImage src={logoDataUrl} style={styles.logoImg} />
           <View style={styles.headerText}>
-            <Text style={styles.tagline}>Logo Review Report · QIS Studio</Text>
+            <Text style={styles.label}>Overall Score</Text>
             <Text style={styles.overallScore}>
-              {review.overall_score}
-              <Text style={styles.overallSub}>/10</Text>
+              {review.overall_score}<Text style={styles.overallSub}>/10</Text>
             </Text>
             <Text style={styles.firstImpression}>{review.first_impression}</Text>
           </View>
         </View>
 
-        {/* Dimension scores */}
+        {/* Logo Type */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Logo Type</Text>
+          <View style={styles.logoTypeBadge}>
+            <Text style={styles.logoTypeText}>{review.logo_type}</Text>
+          </View>
+          <Text style={styles.logoTypeReasoning}>{review.logo_type_reasoning}</Text>
+        </View>
+
+        {/* Color Psychology */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Color Psychology</Text>
+          <Text style={styles.colorPsychText}>{review.color_psychology}</Text>
+        </View>
+
+        {/* Dimensions */}
         <Text style={styles.sectionTitle}>Design Dimensions</Text>
         <View style={styles.grid}>
           {(Object.keys(DIMENSION_LABELS) as Array<keyof LogoReview["dimensions"]>).map((key) => {
@@ -136,26 +102,9 @@ export function ReviewPDF({ review, logoDataUrl }: ReviewPDFProps) {
           })}
         </View>
 
-        {/* Key Issues */}
-        <Text style={styles.sectionTitle}>Key Issues</Text>
-        <View style={styles.improvementsCard}>
-          {review.top_issues.map((item, i) => (
-            <View key={i} style={styles.improvRow}>
-              <Text style={styles.improvNum}>{i + 1}</Text>
-              <Text style={styles.improvText}>{item}</Text>
-            </View>
-          ))}
-        </View>
-
-        {/* Summary */}
-        <Text style={styles.sectionTitle}>Summary</Text>
-        <View style={styles.summaryCard}>
-          <Text style={styles.summaryText}>{review.summary}</Text>
-        </View>
-
         {/* Footer */}
         <View style={styles.footer}>
-          <Text style={styles.footerText}>Generated by QIS Studio Logo Review</Text>
+          <Text style={styles.footerText}>QIS Studio — Logo Review Report</Text>
           <Text style={styles.footerText}>{new Date().toLocaleDateString()}</Text>
         </View>
       </Page>

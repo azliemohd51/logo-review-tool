@@ -41,6 +41,10 @@ export async function POST(req: NextRequest) {
     targetAudience: formData.get("targetAudience") as string,
     hasWebsite: formData.get("hasWebsite") === "true",
     logoAcrossPlatforms: formData.get("logoAcrossPlatforms") === "true",
+    hasLogoVariety: formData.get("hasLogoVariety") === "true",
+    uploadedIconVersion: formData.get("uploadedIconVersion") === "null"
+      ? null
+      : formData.get("uploadedIconVersion") === "true",
   };
 
   const arrayBuffer = await file.arrayBuffer();
@@ -57,38 +61,22 @@ export async function POST(req: NextRequest) {
           content: [
             {
               type: "image",
-              source: {
-                type: "base64",
-                media_type: mediaType,
-                data: base64,
-              },
+              source: { type: "base64", media_type: mediaType, data: base64 },
             },
-            {
-              type: "text",
-              text: buildReviewPrompt(businessInfo),
-            },
+            { type: "text", text: buildReviewPrompt(businessInfo) },
           ],
         },
       ],
     });
 
     const textBlock = response.content.find((b) => b.type === "text");
-    if (!textBlock || textBlock.type !== "text") {
-      throw new Error("No text response from Claude");
-    }
+    if (!textBlock || textBlock.type !== "text") throw new Error("No text response");
 
-    const raw = textBlock.text
-      .replace(/```json\n?/g, "")
-      .replace(/```\n?/g, "")
-      .trim();
-
+    const raw = textBlock.text.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
     const review: LogoReview = JSON.parse(raw);
     return NextResponse.json({ review });
   } catch (err) {
     console.error("Review error:", err);
-    return NextResponse.json(
-      { error: "Failed to analyze logo. Please try again." },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to analyze logo. Please try again." }, { status: 500 });
   }
 }

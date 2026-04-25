@@ -49,6 +49,8 @@ export default function Home() {
     targetAudience: string;
     hasWebsite: boolean;
     logoAcrossPlatforms: boolean;
+    hasLogoVariety: boolean;
+    uploadedIconVersion: boolean | null;
   }) => {
     const fullInfo: BusinessInfo = {
       ...(businessData as Pick<BusinessInfo, "brandName" | "businessCategory" | "typeOfBusiness" | "industry">),
@@ -66,6 +68,8 @@ export default function Home() {
     formData.append("targetAudience", fullInfo.targetAudience);
     formData.append("hasWebsite", String(fullInfo.hasWebsite));
     formData.append("logoAcrossPlatforms", String(fullInfo.logoAcrossPlatforms));
+    formData.append("hasLogoVariety", String(fullInfo.hasLogoVariety));
+    formData.append("uploadedIconVersion", String(fullInfo.uploadedIconVersion));
 
     try {
       const res = await fetch("/api/review", { method: "POST", body: formData });

@@ -11,19 +11,22 @@ Business context:
 - Target audience: ${info.targetAudience}
 - Has website: ${info.hasWebsite ? "Yes" : "No"}
 - Uses logo across all platforms: ${info.logoAcrossPlatforms ? "Yes" : "No"}
+- Has a variety of logos (logo suite): ${info.hasLogoVariety ? "Yes" : "No"}${info.hasLogoVariety && info.uploadedIconVersion !== null ? `\n- Uploaded version: ${info.uploadedIconVersion ? "Icon/symbol mark (standalone graphic, no text)" : "Full/primary logo (includes brand name or full lockup)"}` : ""}
 
 Rules:
 - Be concise and direct. One sentence per assessment.
-- Do NOT suggest fixes or improvements. Only state what is wrong.
-- If something is fine, say so briefly. Do not pad.
+- Do NOT suggest fixes. Only state what is wrong or confirm what works.
 - Scores should be honest, not inflated.
-${info.logoAcrossPlatforms ? "- Weight scalability and versatility more heavily since the logo is used across platforms." : ""}
+${info.logoAcrossPlatforms ? "- Weight scalability and versatility more heavily since the logo is used across platforms." : ""}${info.hasLogoVariety && info.uploadedIconVersion ? "\n- This is an icon/symbol mark, so typography score should reflect the absence of text as intentional." : ""}${info.hasLogoVariety && info.uploadedIconVersion === false ? "\n- This is the full primary logo, so evaluate all elements including how the text and mark work together." : ""}
 
 Return ONLY this JSON object, no markdown, no preamble:
 
 {
   "overall_score": <integer 1-10>,
-  "first_impression": "<One blunt sentence on the immediate visual impact — what works or what doesn't>",
+  "first_impression": "<One blunt sentence on the immediate visual impact>",
+  "logo_type": "<Exactly one of: Lettermark, Wordmark, Pictorial Mark, Abstract Mark, Mascot, Combination Mark, Emblem>",
+  "logo_type_reasoning": "<One sentence explaining why this logo fits that type>",
+  "color_psychology": "<2-3 sentences on what the colors communicate psychologically, whether they align with the brand's industry and audience, and any disconnect>",
   "dimensions": {
     "simplicity_memorability": {
       "score": <integer 1-10>,
@@ -47,14 +50,8 @@ Return ONLY this JSON object, no markdown, no preamble:
     },
     "industry_fit": {
       "score": <integer 1-10>,
-      "assessment": "<One sentence specific to ${info.industry} and ${info.targetAudience} — does it signal the right thing?>"
+      "assessment": "<One sentence specific to ${info.industry} and ${info.targetAudience}>"
     }
-  },
-  "top_issues": [
-    "<The most critical problem with this logo — state the issue only, no fix>",
-    "<Second most critical problem — state the issue only, no fix>",
-    "<Third most critical problem — state the issue only, no fix>"
-  ],
-  "summary": "<Two sentences maximum. State the core problems. No encouragement, no suggestions>"
+  }
 }`;
 }

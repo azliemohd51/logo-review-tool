@@ -6,6 +6,8 @@ export interface BusinessInfo {
   targetAudience: string;
   hasWebsite: boolean;
   logoAcrossPlatforms: boolean;
+  hasLogoVariety: boolean;
+  uploadedIconVersion: boolean | null;
 }
 
 export interface DimensionScore {
@@ -13,9 +15,21 @@ export interface DimensionScore {
   assessment: string;
 }
 
+export type LogoType =
+  | "Lettermark"
+  | "Wordmark"
+  | "Pictorial Mark"
+  | "Abstract Mark"
+  | "Mascot"
+  | "Combination Mark"
+  | "Emblem";
+
 export interface LogoReview {
   overall_score: number;
   first_impression: string;
+  logo_type: LogoType;
+  logo_type_reasoning: string;
+  color_psychology: string;
   dimensions: {
     simplicity_memorability: DimensionScore;
     color_palette: DimensionScore;
@@ -24,6 +38,4 @@ export interface LogoReview {
     versatility: DimensionScore;
     industry_fit: DimensionScore;
   };
-  top_issues: [string, string, string];
-  summary: string;
 }

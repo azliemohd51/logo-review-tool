@@ -20,7 +20,7 @@ export function DownloadButton({ review, logoDataUrl }: DownloadButtonProps) {
     <PDFDownloadLink
       document={<ReviewPDF review={review} logoDataUrl={logoDataUrl} />}
       fileName="logo-review.pdf"
-      className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-[#7a0044] via-[#A3005C] to-[#c4006f] text-sm font-semibold text-white shadow-lg shadow-[#A3005C]/30 hover:brightness-110 transition-all"
+      className="inline-flex items-center justify-center gap-2 px-6 py-3 border border-black bg-black text-sm font-semibold text-white hover:bg-black/80 transition-all flex-1"
     >
       {({ loading }) =>
         loading ? (

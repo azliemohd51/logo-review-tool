@@ -3,20 +3,50 @@
 import { useState } from "react";
 
 interface AdditionalInfoFormProps {
-  onNext: (data: { targetAudience: string; hasWebsite: boolean; logoAcrossPlatforms: boolean }) => void;
+  onNext: (data: {
+    targetAudience: string;
+    hasWebsite: boolean;
+    logoAcrossPlatforms: boolean;
+    hasLogoVariety: boolean;
+    uploadedIconVersion: boolean | null;
+  }) => void;
   onBack: () => void;
   brandName: string;
 }
 
-function YesNoField({ label, description, value, onChange }: {
+function Tooltip({ text }: { text: string }) {
+  return (
+    <span className="relative group inline-flex items-center ml-1.5">
+      <span className="flex h-3.5 w-3.5 items-center justify-center rounded-full border border-white/30 text-[9px] text-white/40 cursor-default select-none">
+        i
+      </span>
+      <span className="pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-56 rounded-lg border border-[#A3005C]/20 bg-[#1a001a] px-3 py-2 text-xs text-white/60 leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10 shadow-xl">
+        {text}
+        <span className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-[#1a001a]" />
+      </span>
+    </span>
+  );
+}
+
+function YesNoField({
+  label,
+  tooltip,
+  description,
+  value,
+  onChange,
+}: {
   label: string;
+  tooltip?: string;
   description?: string;
   value: boolean | null;
   onChange: (v: boolean) => void;
 }) {
   return (
     <div className="flex flex-col gap-2">
-      <label className="text-xs font-medium text-white/50 uppercase tracking-wider">{label}</label>
+      <label className="flex items-center text-xs font-medium text-white/50 uppercase tracking-wider">
+        {label}
+        {tooltip && <Tooltip text={tooltip} />}
+      </label>
       {description && <p className="text-xs text-white/30 -mt-1">{description}</p>}
       <div className="flex gap-3">
         {[true, false].map((opt) => (
@@ -41,8 +71,26 @@ export function AdditionalInfoForm({ onNext, onBack, brandName }: AdditionalInfo
   const [targetAudience, setTargetAudience] = useState("");
   const [hasWebsite, setHasWebsite] = useState<boolean | null>(null);
   const [logoAcrossPlatforms, setLogoAcrossPlatforms] = useState<boolean | null>(null);
+  const [hasLogoVariety, setHasLogoVariety] = useState<boolean | null>(null);
+  const [uploadedIconVersion, setUploadedIconVersion] = useState<boolean | null>(null);
 
-  const isValid = targetAudience.trim() && hasWebsite !== null && logoAcrossPlatforms !== null;
+  const isValid =
+    targetAudience.trim() &&
+    hasWebsite !== null &&
+    logoAcrossPlatforms !== null &&
+    hasLogoVariety !== null &&
+    (hasLogoVariety === false || uploadedIconVersion !== null);
+
+  const handleSubmit = () => {
+    if (!isValid) return;
+    onNext({
+      targetAudience,
+      hasWebsite: hasWebsite!,
+      logoAcrossPlatforms: logoAcrossPlatforms!,
+      hasLogoVariety: hasLogoVariety!,
+      uploadedIconVersion: hasLogoVariety ? uploadedIconVersion : null,
+    });
+  };
 
   return (
     <div className="w-full max-w-lg mx-auto">
@@ -56,7 +104,9 @@ export function AdditionalInfoForm({ onNext, onBack, brandName }: AdditionalInfo
         <div className="flex flex-col gap-6">
           {/* Target audience */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-medium text-white/50 uppercase tracking-wider">Target Audience</label>
+            <label className="text-xs font-medium text-white/50 uppercase tracking-wider">
+              Target Audience
+            </label>
             <textarea
               value={targetAudience}
               onChange={(e) => setTargetAudience(e.target.value)}
@@ -78,6 +128,28 @@ export function AdditionalInfoForm({ onNext, onBack, brandName }: AdditionalInfo
             value={logoAcrossPlatforms}
             onChange={setLogoAcrossPlatforms}
           />
+
+          <YesNoField
+            label="Do you have a variety of logos?"
+            tooltip="A logo variety (or logo suite) means you have multiple versions of your logo — e.g. a primary full logo, a standalone icon/symbol, a wordmark-only version, or horizontal and stacked layouts."
+            value={hasLogoVariety}
+            onChange={(v) => {
+              setHasLogoVariety(v);
+              if (!v) setUploadedIconVersion(null);
+            }}
+          />
+
+          {/* Conditional: only show if they have variety */}
+          {hasLogoVariety === true && (
+            <div className="pl-4 border-l-2 border-[#A3005C]/30">
+              <YesNoField
+                label="Did you upload the icon/symbol version?"
+                tooltip="The icon or symbol is the standalone graphic mark of your logo — without the brand name text. Knowing which version you uploaded helps us review it in the right context."
+                value={uploadedIconVersion}
+                onChange={setUploadedIconVersion}
+              />
+            </div>
+          )}
         </div>
       </div>
 
@@ -89,14 +161,7 @@ export function AdditionalInfoForm({ onNext, onBack, brandName }: AdditionalInfo
           ← Back
         </button>
         <button
-          onClick={() =>
-            isValid &&
-            onNext({
-              targetAudience,
-              hasWebsite: hasWebsite!,
-              logoAcrossPlatforms: logoAcrossPlatforms!,
-            })
-          }
+          onClick={handleSubmit}
           disabled={!isValid}
           className={`flex-[2] px-6 py-3 rounded-xl text-sm font-semibold text-white transition-all
             ${isValid
