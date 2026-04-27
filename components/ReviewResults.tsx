@@ -19,47 +19,66 @@ interface ReviewResultsProps {
   onReset: () => void;
 }
 
+function overallColor(score: number) {
+  if (score < 5) return "text-red-400";
+  if (score <= 8) return "text-yellow-400";
+  return "text-green-400";
+}
+
+function ScoreLegend() {
+  return (
+    <div className="flex items-center gap-4 text-xs text-white/30">
+      <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-red-500" />Below 5</span>
+      <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-yellow-400" />5 – 8</span>
+      <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-green-400" />9 – 10</span>
+    </div>
+  );
+}
+
 export function ReviewResults({ review, logoDataUrl, onReset }: ReviewResultsProps) {
   return (
-    <div className="w-full max-w-3xl mx-auto bg-white text-black">
+    <div className="w-full max-w-3xl mx-auto">
 
-      {/* Header row */}
-      <div className="flex flex-col sm:flex-row gap-8 mb-10 pb-8 border-b border-black/10">
-        <div className="flex-shrink-0 flex items-start justify-center sm:justify-start">
-          <div className="h-28 w-28 border border-black/10 bg-gray-50 flex items-center justify-center">
+      {/* Overall score */}
+      <div className="flex flex-col sm:flex-row gap-6 mb-8 rounded-2xl border border-[#A3005C]/20 bg-white/[0.04] backdrop-blur-sm p-6 shadow-lg shadow-[#A3005C]/10">
+        <div className="flex-shrink-0 flex items-center justify-center">
+          <div className="h-32 w-32 rounded-xl border border-[#A3005C]/20 bg-white/[0.06] flex items-center justify-center">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={logoDataUrl} alt="Uploaded logo" className="h-full w-full object-contain p-3" />
           </div>
         </div>
         <div className="flex flex-col justify-center">
-          <p className="text-xs font-semibold uppercase tracking-widest text-black/30 mb-1">Overall Score</p>
-          <p className="text-7xl font-bold text-black leading-none mb-3">
-            {review.overall_score}<span className="text-3xl font-normal text-black/25">/10</span>
+          <p className="text-xs font-semibold uppercase tracking-widest text-[#A3005C] mb-1">Overall Score</p>
+          <p className={`text-6xl font-bold leading-none mb-3 ${overallColor(review.overall_score)}`}>
+            {review.overall_score}<span className="text-2xl font-normal text-white/25">/10</span>
           </p>
-          <p className="text-sm text-black/55 leading-relaxed max-w-md">{review.first_impression}</p>
+          <p className="text-sm text-white/55 leading-relaxed max-w-md">{review.first_impression}</p>
         </div>
       </div>
 
       {/* Logo Type */}
-      <div className="mb-8 pb-8 border-b border-black/10">
-        <p className="text-xs font-semibold uppercase tracking-widest text-black/30 mb-3">Logo Type</p>
+      <div className="mb-4 rounded-xl border border-[#A3005C]/20 bg-white/[0.04] backdrop-blur-sm p-5">
+        <p className="text-xs font-semibold uppercase tracking-widest text-[#A3005C] mb-3">Logo Type</p>
         <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-          <span className="inline-block border border-black px-4 py-1.5 text-sm font-semibold uppercase tracking-wider text-black w-fit">
+          <span className="inline-block border border-white/20 px-4 py-1.5 text-sm font-semibold uppercase tracking-wider text-white w-fit">
             {review.logo_type}
           </span>
-          <p className="text-sm text-black/55 leading-relaxed">{review.logo_type_reasoning}</p>
+          <p className="text-sm text-white/50 leading-relaxed">{review.logo_type_reasoning}</p>
         </div>
       </div>
 
       {/* Color Psychology */}
-      <div className="mb-8 pb-8 border-b border-black/10">
-        <p className="text-xs font-semibold uppercase tracking-widest text-black/30 mb-3">Color Psychology</p>
-        <p className="text-sm text-black/60 leading-relaxed">{review.color_psychology}</p>
+      <div className="mb-4 rounded-xl border border-[#A3005C]/20 bg-white/[0.04] backdrop-blur-sm p-5">
+        <p className="text-xs font-semibold uppercase tracking-widest text-[#A3005C] mb-3">Color Psychology</p>
+        <p className="text-sm text-white/55 leading-relaxed">{review.color_psychology}</p>
       </div>
 
       {/* Dimension scores */}
-      <div className="mb-8 pb-8 border-b border-black/10">
-        <p className="text-xs font-semibold uppercase tracking-widest text-black/30 mb-4">Design Dimensions</p>
+      <div className="mb-4">
+        <div className="flex items-center justify-between mb-3">
+          <p className="text-xs font-semibold uppercase tracking-widest text-[#A3005C]">Design Dimensions</p>
+          <ScoreLegend />
+        </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {(Object.keys(DIMENSION_LABELS) as Array<keyof LogoReview["dimensions"]>).map((key) => (
             <ScoreCard
@@ -73,14 +92,22 @@ export function ReviewResults({ review, logoDataUrl, onReset }: ReviewResultsPro
       </div>
 
       {/* Actions */}
-      <div className="flex flex-col sm:flex-row gap-3">
+      <div className="flex flex-col sm:flex-row gap-3 mb-8">
         <DownloadButton review={review} logoDataUrl={logoDataUrl} />
         <button
           onClick={onReset}
-          className="flex-1 px-6 py-3 border border-black/20 text-sm font-medium text-black/60 hover:border-black hover:text-black transition-all"
+          className="flex-1 px-6 py-3 rounded-xl border border-[#A3005C]/30 text-sm font-medium text-white/60 hover:border-[#A3005C]/60 hover:text-white transition-all"
         >
           Review Another Logo
         </button>
+      </div>
+
+      {/* Disclaimer */}
+      <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-5">
+        <p className="text-xs font-semibold uppercase tracking-widest text-white/20 mb-2">Disclaimer</p>
+        <p className="text-xs text-white/30 leading-relaxed">
+          This logo review is generated by artificial intelligence and is intended for informational and creative guidance purposes only. The feedback provided does not constitute professional graphic design, brand strategy, or legal advice. Scores and assessments are based on general design principles and the context you have provided — they are subjective by nature and should not be treated as a definitive evaluation of your brand. QIS Studio accepts no liability for decisions made based on this AI-generated analysis. For a comprehensive brand review, we recommend consulting a qualified design professional.
+        </p>
       </div>
     </div>
   );
