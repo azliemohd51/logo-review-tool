@@ -157,11 +157,7 @@ export default function Home() {
         )}
 
         {/* Loading */}
-        {step === "loading" && (
-          <div className="flex flex-col items-center pt-4">
-            <LoadingState />
-          </div>
-        )}
+        {step === "loading" && <LoadingState logoDataUrl={logoDataUrl} />}
 
         {/* Results */}
         {step === "results" && review && (
