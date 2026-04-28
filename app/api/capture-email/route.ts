@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
   try {
     // Notify QIS Studio of new lead
     await resend.emails.send({
-      from: "Logo Review <noreply@qisstudio.com>",
+      from: "Logo Review <noreply@mail.qisstudio.com>",
       to: "azlie.mohd51@gmail.com",
       subject: `New Logo Review Lead — ${brandName}`,
       html: `
@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
 
     // Send confirmation to the user
     await resend.emails.send({
-      from: "QIS Studio <noreply@qisstudio.com>",
+      from: "QIS Studio <noreply@mail.qisstudio.com>",
       to: email,
       subject: "Your logo analysis is ready — QIS Studio",
       html: `
