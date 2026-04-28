@@ -113,7 +113,7 @@ export default function Home() {
           <div className="flex flex-col items-center text-center">
             <div className="inline-flex items-center gap-2 rounded-full border border-[#A3005C]/30 bg-[#A3005C]/10 px-4 py-1.5 mb-6">
               <div className="h-1.5 w-1.5 rounded-full bg-[#ff1f7e] animate-pulse" />
-              <span className="text-xs font-medium text-[#ff1f7e]">Powered by Claude AI</span>
+              <span className="text-xs font-medium text-[#ff1f7e]">Powered by AI</span>
             </div>
             <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4 tracking-tight leading-tight">
               Get instant feedback<br />
@@ -198,7 +198,7 @@ export default function Home() {
       <footer className="w-full border-t border-[#A3005C]/10 px-6 py-4">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <p className="text-xs text-white/20">© 2025 QIS Studio. All rights reserved.</p>
-          <p className="text-xs text-white/20">Max 5MB · PNG · JPG · SVG</p>
+          <p className="text-xs text-white/20">v1.4</p>
         </div>
       </footer>
     </div>
