@@ -13,6 +13,16 @@ export async function POST(req: NextRequest) {
   }
 
   try {
+    // Add contact to Resend audience
+    const audienceId = process.env.RESEND_AUDIENCE_ID;
+    if (audienceId) {
+      await resend.contacts.create({
+        email,
+        unsubscribed: false,
+        audienceId,
+      });
+    }
+
     // Notify QIS Studio of new lead
     await resend.emails.send({
       from: "Logo Review <noreply@mail.qisstudio.com>",
