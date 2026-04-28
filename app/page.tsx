@@ -5,21 +5,12 @@ import Image from "next/image";
 import { UploadZone } from "@/components/UploadZone";
 import { BusinessInfoForm } from "@/components/BusinessInfoForm";
 import { AdditionalInfoForm } from "@/components/AdditionalInfoForm";
+import { EmailCaptureForm } from "@/components/EmailCaptureForm";
 import { LoadingState } from "@/components/LoadingState";
 import { ReviewResults } from "@/components/ReviewResults";
-import { StepIndicator } from "@/components/StepIndicator";
 import { LogoReview, BusinessInfo } from "@/lib/types";
 
-type Step = "upload" | "business" | "additional" | "loading" | "results" | "error";
-
-const STEP_LABELS = ["Upload Logo", "Business Info", "Additional Info"];
-
-function stepToNumber(step: Step): number {
-  if (step === "upload") return 1;
-  if (step === "business") return 2;
-  if (step === "additional") return 3;
-  return 3;
-}
+type Step = "upload" | "business" | "additional" | "email" | "loading" | "results" | "error";
 
 export default function Home() {
   const [step, setStep] = useState<Step>("upload");
@@ -45,18 +36,19 @@ export default function Home() {
     setStep("additional");
   };
 
-  const handleAdditionalNext = async (data: {
+  const handleAdditionalNext = (data: {
     targetAudience: string;
     hasWebsite: boolean;
     logoAcrossPlatforms: boolean;
     hasLogoVariety: boolean;
     uploadedIconVersion: boolean | null;
   }) => {
-    const fullInfo: BusinessInfo = {
-      ...(businessData as Pick<BusinessInfo, "brandName" | "businessCategory" | "typeOfBusiness" | "industry">),
-      ...data,
-    };
-    setBusinessData(fullInfo);
+    setBusinessData((prev) => ({ ...prev, ...data }));
+    setStep("email");
+  };
+
+  const handleEmailNext = async (email: string) => {
+    const fullInfo = businessData as BusinessInfo;
     setStep("loading");
 
     const formData = new FormData();
@@ -70,6 +62,7 @@ export default function Home() {
     formData.append("logoAcrossPlatforms", String(fullInfo.logoAcrossPlatforms));
     formData.append("hasLogoVariety", String(fullInfo.hasLogoVariety));
     formData.append("uploadedIconVersion", String(fullInfo.uploadedIconVersion));
+    formData.append("email", email);
 
     try {
       const res = await fetch("/api/review", { method: "POST", body: formData });
@@ -97,8 +90,6 @@ export default function Home() {
     setErrorMsg("");
   };
 
-  const showIndicator = ["upload", "business", "additional"].includes(step);
-
   return (
     <div className="relative z-10 min-h-screen flex flex-col">
       {/* Ambient glow */}
@@ -109,10 +100,8 @@ export default function Home() {
 
       {/* Header */}
       <header className="w-full border-b border-[#A3005C]/10 px-6 py-5">
-        <div className="max-w-4xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Image src="/qis-logo.png" alt="QIS Studio" width={120} height={28} className="object-contain" />
-          </div>
+        <div className="max-w-4xl mx-auto">
+          <Image src="/qis-logo.png" alt="QIS Studio" width={120} height={28} className="object-contain" />
         </div>
       </header>
 
@@ -154,6 +143,16 @@ export default function Home() {
             onNext={handleAdditionalNext}
             onBack={() => setStep("business")}
             brandName={businessData.brandName ?? "your brand"}
+          />
+        )}
+
+        {/* Step 4: Email Capture */}
+        {step === "email" && (
+          <EmailCaptureForm
+            onNext={handleEmailNext}
+            onBack={() => setStep("additional")}
+            brandName={businessData.brandName ?? "your brand"}
+            industry={businessData.industry ?? ""}
           />
         )}
 
