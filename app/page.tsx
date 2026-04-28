@@ -194,7 +194,7 @@ export default function Home() {
       <footer className="w-full border-t border-[#A3005C]/10 px-6 py-4">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <p className="text-xs text-white/20">© 2025 QIS Studio. All rights reserved.</p>
-          <p className="text-xs text-white/20">v1.6</p>
+          <p className="text-xs text-white/20">v1.7</p>
         </div>
       </footer>
     </div>
