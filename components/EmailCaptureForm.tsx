@@ -13,11 +13,20 @@ export function EmailCaptureForm({ onNext, onBack, brandName, industry }: EmailC
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [touched, setTouched] = useState(false);
 
   const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
+  const validate = () => {
+    if (!email.trim()) { setError("Please enter your email address."); return false; }
+    if (!isValid) { setError("Please enter a valid email address."); return false; }
+    setError("");
+    return true;
+  };
+
   const handleSubmit = async () => {
-    if (!isValid || loading) return;
+    setTouched(true);
+    if (!validate() || loading) return;
     setError("");
     setLoading(true);
 
@@ -60,19 +69,31 @@ export function EmailCaptureForm({ onNext, onBack, brandName, industry }: EmailC
           <input
             type="email"
             value={email}
-            onChange={(e) => { setEmail(e.target.value); setError(""); }}
+            onChange={(e) => { setEmail(e.target.value); if (touched) validate(); }}
+            onBlur={() => { setTouched(true); validate(); }}
             onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
             placeholder="yourname@email.com"
-            className="w-full rounded-xl border border-[#A3005C]/20 bg-white/[0.04] px-4 py-3.5 text-sm text-white placeholder-white/20 outline-none transition-all focus:border-[#A3005C]/60 focus:bg-white/[0.06] focus:ring-1 focus:ring-[#A3005C]/30"
+            className={`w-full rounded-xl border bg-white/[0.04] px-4 py-3.5 text-sm text-white placeholder-white/20 outline-none transition-all focus:bg-white/[0.06] focus:ring-1
+              ${error
+                ? "border-red-500/60 focus:border-red-500/80 focus:ring-red-500/20"
+                : "border-[#A3005C]/20 focus:border-[#A3005C]/60 focus:ring-[#A3005C]/30"
+              }`}
           />
-          {error && <p className="text-xs text-red-400">{error}</p>}
+          {error && (
+            <p className="flex items-center gap-1.5 text-xs text-red-400">
+              <svg className="h-3.5 w-3.5 shrink-0" viewBox="0 0 24 24" fill="currentColor">
+                <path fillRule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z" clipRule="evenodd" />
+              </svg>
+              {error}
+            </p>
+          )}
         </div>
 
         <button
           onClick={handleSubmit}
-          disabled={!isValid || loading}
+          disabled={loading}
           className={`w-full py-3.5 rounded-xl text-sm font-semibold text-white transition-all mt-2
-            ${isValid && !loading
+            ${!loading
               ? "bg-gradient-to-r from-[#7a0044] via-[#A3005C] to-[#c4006f] shadow-lg shadow-[#A3005C]/30 hover:brightness-110"
               : "bg-white/[0.06] text-white/30 cursor-not-allowed"
             }`}
